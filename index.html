@@ -1,14 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>fnaf movie online 100% legit and no virus</title>
+  <style>
+    .controls button[data-state="subtitles"] {
+      height: 85%;
+      text-indent: 0;
+      font-size: 16px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #666;
+      background: #000;
+      border-radius: 2px;
+    }
+
+    .subtitles-menu {
+      display: none;
+      position: absolute;
+      bottom: 14.8%;
+      right: 20px;
+      background: #666;
+      list-style-type: none;
+      margin: 0;
+      width: 100px;
+      padding: 10px;
+    }
+
+    .subtitles-menu li {
+      padding: 0;
+      text-align: center;
+    }
+
+    .subtitles-menu li button {
+      border: none;
+      background: #000;
+      color: #fff;
+      cursor: pointer;
+      width: 90%;
+      padding: 2px 5px;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Your video and controls -->
+<div id="video-controls" class="controls" data-state="hidden">
+  <button id="playpause" type="button" data-state="play">Play/Pause</button>
+  <button id="stop" type="button" data-state="stop">Stop</button>
+  <div class="progress">
+    <progress id="progress" value="0" min="0">
+      <span id="progress-bar"></span>
+    </progress>
+  </div>
+  <button id="mute" type="button" data-state="mute">Mute/Unmute</button>
+  <button id="volinc" type="button" data-state="volup">Vol+</button>
+  <button id="voldec" type="button" data-state="voldown">Vol-</button>
+  <button id="fs" type="button" data-state="go-fullscreen">Fullscreen</button>
+  <button id="subtitles" type="button" data-state="subtitles">CC</button>
+</div>
+
+<!-- Your video element with tracks -->
 <video id="video" controls preload="metadata">
   <source src="vid/fnaf.mp4" type="video/mp4"/>
-  <track
-    label="English"
-    kind="subtitles"
-    srclang="en"
-    src="vid/fnaf.en.vtt"
-    default/>
-  <track
-    label="Polski"
-    kind="subtitles"
-    srclang="pl"
-    src="vid/fnaf.pl.vtt"/>
+  track label="English" kind="subtitles" srclang="en" src="vid/fnaf.en.vtt" default/>
+  <track label="Polski" kind="subtitles" srclang="pl" src="vid/fnaf.pl.vtt"/>
 </video>
+
+<!-- Subtitles menu -->
+<script>
+  // Add your JavaScript code here
+  const video = document.getElementById("video");
+  const videoContainer = document.getElementById("video-controls");
+  const subtitles = document.getElementById("subtitles");
+
+  for (let i = 0; i < video.textTracks.length; i++) {
+    video.textTracks[i].mode = "hidden";
+  }
+
+  let subtitlesMenu;
+  if (video.textTracks) {
+    const df = document.createDocumentFragment();
+    subtitlesMenu = df.appendChild(document.createElement("ul"));
+    subtitlesMenu.className = "subtitles-menu";
+    subtitlesMenu.appendChild(createMenuItem("subtitles-off", "", "Off"));
+    for (let i = 0; i < video.textTracks.length; i++) {
+      subtitlesMenu.appendChild(
+        createMenuItem(
+          `subtitles-${video.textTracks[i].language}`,
+          video.textTracks[i].language,
+          video.textTracks[i].label,
+        ),
+      );
+    }
+    videoContainer.appendChild(subtitlesMenu);
+  }
+
+  subtitles.addEventListener("click", (e) => {
+    if (subtitlesMenu) {
+      subtitlesMenu.style.display =
+        subtitlesMenu.style.display === "block" ? "none" : "block";
+    }
+  });
+
+  const subtitleMenuButtons = [];
+  function createMenuItem(id, lang, label) {
+    const listItem = document.createElement("li");
+    const button = listItem.appendChild(document.createElement("button"));
+    button.setAttribute("id", id);
+    button.className = "subtitles-button";
+    if (lang.length > 0) button.setAttribute("lang", lang);
+    button.value = label;
+    button.setAttribute("data-state", "inactive");
+    button.appendChild(document.createTextNode(label));
+    button.addEventListener("click", (e) => {
+      subtitleMenuButtons.forEach((button) => {
+        button.setAttribute("data-state", "inactive");
+      });
+
+      const lang = button.getAttribute("lang");
+      for (let i = 0; i < video.textTracks.length; i++) {
+        if (video.textTracks[i].language === lang) {
+          video.textTracks[i].mode = "showing";
+          button.setAttribute("data-state", "active");
+        } else {
+          video.textTracks[i].mode = "hidden";
+        }
+      }
+      subtitlesMenu.style.display = "none";
+    });
+    subtitleMenuButtons.push(button);
+    return listItem;
+  }
+</script>
+
+</body>
+</html>
